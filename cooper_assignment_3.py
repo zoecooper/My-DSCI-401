@@ -247,7 +247,7 @@ for n in n_est:
 		print_multiclass_classif_error_report(y_test, preds)
 
 newmod = ensemble.RandomForestClassifier(n_estimators=50, max_depth=6)
-newmod.fit(x_val_train, y_val_train)
+newmod.fit(x_train, y_train)
 newpreds = newmod.predict(x_val_test)
 print_multiclass_classif_error_report(y_val_test, newpreds)
 
