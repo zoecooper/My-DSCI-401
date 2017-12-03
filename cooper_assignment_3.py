@@ -187,15 +187,16 @@ print('(Actual, Predicted): \n' + str(zip(y_test_labs, pred_labs)))
 
 #Loaded in libraries.
 import pandas as pd
+import numpy as np
 from sklearn import ensemble 
 from sklearn.model_selection import train_test_split
 from data_util import *
 
 #Imported the data set.
-data = pd.read_csv('./data/churn_validation.csv')
+valdata = pd.read_csv('./data/churn_validation.csv')
 
 #Displayed data.
-print(data.head())
+print(valdata.head())
 
 # Got a list of the categorical features.
 def cat_features(dataframe):
@@ -209,26 +210,26 @@ def cat_feature_inds(dataframe):
 	selected = filter(lambda (name, ind): not(dataframe[name].dtype in [td['a'].dtype, td['b'].dtype]), enums)
 	return map(lambda (x, y): y, selected)
 
-print(cat_feature_inds(data))
+print(cat_feature_inds(valdata))
 
 # Transformed the df to a "one-hot encoding".
-data = pd.get_dummies(data, columns=cat_features(data))
+valdata = pd.get_dummies(valdata, columns=cat_features(valdata))
 
 #Look at it again.
-print(data.head())
+print(valdata.head())
 
 # Got features and x and y (response) data.
-features = list(data)
-features.remove('CustID')
-features.remove('Churn_Yes')
-features.remove('Churn_No')
-data_og_x = data[features]
-data_val_x = data[features]
-data_og_y = ['Churn_Yes']
-data_val_y = ['Churn_Yes']
+newfeatures = list(valdata)
+newfeatures.remove('CustID')
+newfeatures.remove('Churn_Yes')
+newfeatures.remove('Churn_No')
+data_x = data[features]
+data_y = data['Churn_Yes']
+data_val_x = valdata[newfeatures]
+data_val_y = valdata['Churn_Yes']
 
 # Split training and test sets.
-x_train, y_train, x_test, y_test = train_test_split(data_og_x, data_og_y, test_size = 0.3, random_state = 4)
+x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size = 0.3, random_state = 4)
 x_val_train, y_val_train, x_val_test, y_val_test = train_test_split(data_val_x, data_val_y, test_size = 0.3, random_state = 4)
 # Built models for different n_est and depth values.
 n_est = [5, 10, 50, 100]
@@ -237,7 +238,7 @@ for n in n_est:
 	for dp in depth:
 		# Create model.
 		mod = ensemble.RandomForestClassifier(n_estimators=n, max_depth=dp)
-	    mod.fit(x_train, y_train)
+		mod.fit(x_train, y_train)
 	    
 		# Make preds.
 		preds = mod.predict(x_test)
@@ -246,7 +247,9 @@ for n in n_est:
 		print_multiclass_classif_error_report(y_test, preds)
 
 newmod = ensemble.RandomForestClassifier(n_estimators=50, max_depth=6)
-newmod.fit(x_train, y_train)
+newmod.fit(x_val_train, y_val_train)
 newpreds = newmod.predict(x_val_test)
 print_multiclass_classif_error_report(y_val_test, newpreds)
+
+
 
