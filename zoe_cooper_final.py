@@ -45,6 +45,8 @@ val_data = pd.read_csv('./data/val_bike_data.csv')
 data_y = data['Holiday']
 data_val_y = val_data['Holiday']
 
+#Link to Presentation on Model Optimization using Bike Data = https://prezi.com/p/o7f2an7qfwrw/#present
+
 #Take out date- we do not need it.
 del data['Date']
 del val_data['Date']
