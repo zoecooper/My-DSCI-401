@@ -14,6 +14,7 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
+import pprint
 
 #DATA TRANSFORMATIONS.
 
@@ -99,11 +100,16 @@ voting_mod = ensemble.VotingClassifier(estimators=[('svm', model1), ('rf', model
 
 # Set up params for combined Grid Search on the voting model. Notice the convention for specifying 
 # parameters foreach of the different models.
+#Make preds.
 param_grid = {'svm__C':[0.2, 0.5, 1.0, 2.0, 5.0, 10.0], 'rf__n_estimators':[5, 10, 50, 100], 'rf__max_depth': [3, 6, None]}
 best_voting_mod = GridSearchCV(estimator=voting_mod, param_grid=param_grid, cv=5)
 best_voting_mod.fit(x_train, y_train)
+preds = best_voting_mod.predict(x_test)
 print('Voting Ensemble Model Test Score: ' + str(best_voting_mod.score(x_test, y_test)))
+#Prints the actual versus predicted.
+pprint.pprint(pd.DataFrame({'Actual': y_test, 'Predicted': preds}))
 
-
+valpreds = best_voting_mod.predict(val_X); 
+print('Voting Ensemble Model Validation Score: ' + str(best_voting_mod.score(val_X, data_val_y)))
 
 
