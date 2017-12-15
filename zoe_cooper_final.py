@@ -115,3 +115,4 @@ valpreds = best_voting_mod.predict(val_X);
 print('Voting Ensemble Model Validation Score: ' + str(best_voting_mod.score(val_X, data_val_y)))
 
 
+# Link to presentation on Model Optimization using Bike Data = https://prezi.com/p/o7f2an7qfwrw/#present
